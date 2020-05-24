@@ -1,5 +1,6 @@
 package com.example.learningtool.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -10,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -28,6 +31,7 @@ import com.example.learningtool.R;
 import com.example.learningtool.adapter.CategoryAdapter;
 import com.example.learningtool.adapter.ProductsAdapter;
 import com.example.learningtool.model.Categories;
+import com.example.learningtool.model.GioHang;
 import com.example.learningtool.model.Products;
 import com.example.learningtool.ultil.CheckConnection;
 import com.example.learningtool.ultil.Server;
@@ -54,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     String hinhCategory="";
     ArrayList<Products> productsArrayList;
     ProductsAdapter productsAdapter;
+    public static ArrayList<GioHang> gioHangArrayList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +75,23 @@ public class MainActivity extends AppCompatActivity {
             CheckConnection.ShowToast_Short(getApplicationContext(),"Bạn hãy kiểm tra lại kết nối");
             finish();
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId())
+        {
+            case R.id.menugiohang:
+                Intent intent=new Intent(getApplicationContext(),GioHangActivity.class);
+                startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void CatchOnItemListView() {
@@ -301,6 +323,13 @@ public class MainActivity extends AppCompatActivity {
         recyclerViewViewmanhinhcinh.setHasFixedSize(true);
         recyclerViewViewmanhinhcinh.setLayoutManager(new GridLayoutManager(getApplicationContext(),2));
         recyclerViewViewmanhinhcinh.setAdapter(productsAdapter);
+        if(gioHangArrayList!=null)
+        {
+
+        }else
+        {
+            gioHangArrayList=new ArrayList<>();
+        }
 
     }
 }
