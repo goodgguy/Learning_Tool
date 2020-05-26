@@ -12,5 +12,7 @@ public class Server {
     public static String DuongDanProductNewest="http://dungcuhoctapapi.azurewebsites.net/api/Product?amount=6";
     public static String ProductwithCategory1="http://dungcuhoctapapi.azurewebsites.net/api/Product?idCategory=";
     public static String ProductwithCategory2="&page=";
+    public static String UserLogin="http://dungcuhoctapapi.azurewebsites.net/api/User?userName=";
+    public static String UserLogin1="&passWord=";
 
 }

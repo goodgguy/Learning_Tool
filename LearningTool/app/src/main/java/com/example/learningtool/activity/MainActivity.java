@@ -3,29 +3,36 @@ package com.example.learningtool.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.learningtool.R;
 import com.example.learningtool.adapter.CategoryAdapter;
@@ -33,6 +40,7 @@ import com.example.learningtool.adapter.ProductsAdapter;
 import com.example.learningtool.model.Categories;
 import com.example.learningtool.model.GioHang;
 import com.example.learningtool.model.Products;
+import com.example.learningtool.model.Users;
 import com.example.learningtool.ultil.CheckConnection;
 import com.example.learningtool.ultil.Server;
 import com.google.android.material.navigation.NavigationView;
@@ -59,23 +67,95 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Products> productsArrayList;
     ProductsAdapter productsAdapter;
     public static ArrayList<GioHang> gioHangArrayList;
+    public static Users users=null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        AnhXa();
-        if(CheckConnection.haveNetworkConnection(getApplicationContext()))
-        {
-            ActionBar();
-            ActionViewFlipper();
-            GetDuLieuCategory();
-            GetDataNewestProduct();
-            CatchOnItemListView();
-        }else {
-            CheckConnection.ShowToast_Short(getApplicationContext(),"Bạn hãy kiểm tra lại kết nối");
-            finish();
-        }
+            AnhXa();
+            if(CheckConnection.haveNetworkConnection(getApplicationContext()))
+            {
+                ActionBar();
+                ActionViewFlipper();
+                GetDuLieuCategory();
+                GetDataNewestProduct();
+                CatchOnItemListView();
+            }else {
+                CheckConnection.ShowToast_Short(getApplicationContext(),"Bạn hãy kiểm tra lại kết nối");
+                finish();
+            }
     }
+   /* public void DialogLogin()
+    {
+        final Dialog dialog=new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.custom_dialog_login);
+        final EditText username=dialog.findViewById(R.id.input_email);
+        final EditText password=dialog.findViewById(R.id.input_password);
+        AppCompatButton btnLogin=dialog.findViewById(R.id.btn_login);
+        dialog.show();
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String getUsername=username.getText().toString();
+                String getPassword=password.getText().toString();
+                if(getUsername.isEmpty()||getPassword.isEmpty())
+                {
+                    Toast.makeText(getApplicationContext(),"Username Password không được để trống",Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    RequestQueue requestQueue= Volley.newRequestQueue(getApplicationContext());
+                    JsonObjectRequest jsonObjectRequest=new JsonObjectRequest(Request.Method.GET, Server.UserLogin + username + Server.UserLogin1 + password, null,
+                            new Response.Listener<JSONObject>() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    if(response.has("Message"))
+                                    {
+                                        Toast.makeText(getApplicationContext(),"Tài khoản không tồn tại",Toast.LENGTH_SHORT).show();
+                                    }else
+                                    {
+                                        dialog.cancel();
+                                        int Id;
+                                        String Name;
+                                        String Email;
+                                        String Phone;
+                                        String Address;
+                                        String Username;
+                                        String password;
+                                        String Avartar;
+                                        int RoleId;
+                                        try {
+                                            Id=response.getInt("Id");
+                                            Name=response.getString("Name");
+                                            Email=response.getString("Email");
+                                            Phone=response.getString("Phone");
+                                            Address=response.getString("Address");
+                                            Username=response.getString("Username");
+                                            password=response.getString("Password");
+                                            Avartar=response.getString("Avatar");
+                                            RoleId=response.getInt("RoleId");
+                                            users=new Users(Id,Name,Email,Phone,Address,Username,password,Avartar,RoleId);
+                                            dialog.cancel();
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                        Toast.makeText(getApplicationContext(),"Đăng nhập thành công",Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Toast.makeText(getApplicationContext(),"Lỗi",Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                    );
+                    requestQueue.add(jsonObjectRequest);
+                }
+            }
+        });
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
