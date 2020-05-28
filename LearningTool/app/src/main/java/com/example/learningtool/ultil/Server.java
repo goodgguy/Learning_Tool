@@ -14,5 +14,8 @@ public class Server {
     public static String ProductwithCategory2="&page=";
     public static String UserLogin="http://dungcuhoctapapi.azurewebsites.net/api/User?userName=";
     public static String UserLogin1="&passWord=";
-
+    public static String postUser="http://dungcuhoctapapi.azurewebsites.net/api/User";
+    public static String postCart="http://dungcuhoctapapi.azurewebsites.net/api/Cart";
+    public static String getCartId0_0="http://dungcuhoctapapi.azurewebsites.net/api/Cart?userID1=";
+    public static String getCartId0_1="&isPaid=";
 }

@@ -1,39 +1,43 @@
 package com.example.learningtool.activity;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.learningtool.Fragment.FragmentDialog_Login;
+import com.example.learningtool.Fragment.FragmentDialog_SignUp;
+import com.example.learningtool.Interface.getIdUserInterface;
+import com.example.learningtool.Interface.getUserInterface;
 import com.example.learningtool.R;
 import com.example.learningtool.adapter.CategoryAdapter;
 import com.example.learningtool.adapter.ProductsAdapter;
@@ -50,9 +54,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements getUserInterface, getIdUserInterface {
     Toolbar toolbar;
     ViewFlipper viewFlipper;
     RecyclerView recyclerViewViewmanhinhcinh;
@@ -68,10 +73,12 @@ public class MainActivity extends AppCompatActivity {
     ProductsAdapter productsAdapter;
     public static ArrayList<GioHang> gioHangArrayList;
     public static Users users=null;
+    public static int IdCart=-1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        DialogLogin();
             AnhXa();
             if(CheckConnection.haveNetworkConnection(getApplicationContext()))
             {
@@ -85,77 +92,11 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
     }
-   /* public void DialogLogin()
+    public void DialogLogin()
     {
-        final Dialog dialog=new Dialog(this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.custom_dialog_login);
-        final EditText username=dialog.findViewById(R.id.input_email);
-        final EditText password=dialog.findViewById(R.id.input_password);
-        AppCompatButton btnLogin=dialog.findViewById(R.id.btn_login);
-        dialog.show();
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String getUsername=username.getText().toString();
-                String getPassword=password.getText().toString();
-                if(getUsername.isEmpty()||getPassword.isEmpty())
-                {
-                    Toast.makeText(getApplicationContext(),"Username Password không được để trống",Toast.LENGTH_SHORT).show();
-                }
-                else
-                {
-                    RequestQueue requestQueue= Volley.newRequestQueue(getApplicationContext());
-                    JsonObjectRequest jsonObjectRequest=new JsonObjectRequest(Request.Method.GET, Server.UserLogin + username + Server.UserLogin1 + password, null,
-                            new Response.Listener<JSONObject>() {
-                                @Override
-                                public void onResponse(JSONObject response) {
-                                    if(response.has("Message"))
-                                    {
-                                        Toast.makeText(getApplicationContext(),"Tài khoản không tồn tại",Toast.LENGTH_SHORT).show();
-                                    }else
-                                    {
-                                        dialog.cancel();
-                                        int Id;
-                                        String Name;
-                                        String Email;
-                                        String Phone;
-                                        String Address;
-                                        String Username;
-                                        String password;
-                                        String Avartar;
-                                        int RoleId;
-                                        try {
-                                            Id=response.getInt("Id");
-                                            Name=response.getString("Name");
-                                            Email=response.getString("Email");
-                                            Phone=response.getString("Phone");
-                                            Address=response.getString("Address");
-                                            Username=response.getString("Username");
-                                            password=response.getString("Password");
-                                            Avartar=response.getString("Avatar");
-                                            RoleId=response.getInt("RoleId");
-                                            users=new Users(Id,Name,Email,Phone,Address,Username,password,Avartar,RoleId);
-                                            dialog.cancel();
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-                                        Toast.makeText(getApplicationContext(),"Đăng nhập thành công",Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            },
-                            new Response.ErrorListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-                                    Toast.makeText(getApplicationContext(),"Lỗi",Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                    );
-                    requestQueue.add(jsonObjectRequest);
-                }
-            }
-        });
-    }*/
+        DialogFragment dialogFragment= FragmentDialog_Login.newInstance();
+        dialogFragment.show(getSupportFragmentManager(),"tag");
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -412,4 +353,80 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+    @Override
+    public void get(Users users) {
+        MainActivity.users=users;
+    }
+    public void getIdCart()
+    {
+
+    }
+
+
+    @Override
+    public void getExit(boolean check) {
+        if(check==true)
+        {
+            finish();
+        }
+    }
+
+    @Override
+    public void getID(int id) {
+
+            long millis = System.currentTimeMillis();
+            java.sql.Date date = new java.sql.Date(millis);
+            try {
+                RequestQueue requestQueue = Volley.newRequestQueue(this);
+                JSONObject jsonBody = new JSONObject();
+                jsonBody.put("UserId",id);
+                jsonBody.put("BuyDate",date);
+                jsonBody.put("IsPaid",0);
+
+                final String mRequestBody = jsonBody.toString();
+                Log.e("Cart Cart Cart Cart",mRequestBody);
+
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, Server.postCart, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.e("TUANQUEN1","Id Id Id Id Id Id");
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }) {
+                    @Override
+                    public String getBodyContentType() {
+                        return "application/json; charset=utf-8";
+                    }
+
+                    @Override
+                    public byte[] getBody() throws AuthFailureError {
+                        try {
+                            return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
+                        } catch (UnsupportedEncodingException uee) {
+                            VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
+                            return null;
+                        }
+                    }
+
+                    @Override
+                    protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                        String responseString = "";
+                        if (response != null) {
+                            responseString = String.valueOf(response.statusCode);
+                        }
+                        return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+                    }
+                };
+
+                requestQueue.add(stringRequest);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
 }

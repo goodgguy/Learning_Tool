@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.learningtool.R;
 import com.example.learningtool.model.GioHang;
@@ -40,6 +41,7 @@ public class DetailProduct extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Toast.makeText(this,String.valueOf(MainActivity.IdCart),Toast.LENGTH_SHORT).show();
         setContentView(R.layout.activity_detail_product);
         AnhXa();
         ActionToolbar();
@@ -89,20 +91,28 @@ public class DetailProduct extends AppCompatActivity {
                     {
                         int soluong=Integer.parseInt(spinner.getSelectedItem().toString());
                         double giamoi=soluong*Price;
-                        MainActivity.gioHangArrayList.add(new GioHang(Id,Name,giamoi,Image,soluong));
+                        GioHang gioHang=new GioHang(Id,Name,giamoi,Image,soluong);
+                        MainActivity.gioHangArrayList.add(gioHang);
+                        AddProductToServer(gioHang);
 
                     }
                 }else
                 {
                     int soluong=Integer.parseInt(spinner.getSelectedItem().toString());
                     double giamoi=soluong*Price;
-                    MainActivity.gioHangArrayList.add(new GioHang(Id,Name,giamoi,Image,soluong));
+                    GioHang gioHang=new GioHang(Id,Name,giamoi,Image,soluong);
+                    MainActivity.gioHangArrayList.add(gioHang);
+                    AddProductToServer(gioHang);
 
                 }
                 Intent intent=new Intent(getApplicationContext(), GioHangActivity.class);
                 startActivity(intent);
             }
         });
+    }
+    private void AddProductToServer(GioHang gioHang)
+    {
+
     }
 
     private void CatchEvenSpinner() {

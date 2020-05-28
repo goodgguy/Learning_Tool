@@ -14,9 +14,7 @@ public class Users {
     {
 
     }
-
-    public Users(int id, String name, String email, String phone, String address, String username, String password, String avartar, int roleId) {
-        Id = id;
+    public Users(int Id ,String name, String email, String phone, String address, String username, String password, String avartar, int roleId) {
         Name = name;
         Email = email;
         Phone = phone;
@@ -24,6 +22,16 @@ public class Users {
         Username = username;
         this.password = password;
         Avartar = avartar;
+        RoleId = roleId;
+    }
+
+    public Users(String name, String email, String phone, String address, String username, String password, int roleId) {
+        Name = name;
+        Email = email;
+        Phone = phone;
+        Address = address;
+        Username = username;
+        this.password = password;
         RoleId = roleId;
     }
 
