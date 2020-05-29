@@ -23,6 +23,7 @@ public class Users {
         this.password = password;
         Avartar = avartar;
         RoleId = roleId;
+        this.Id=Id;
     }
 
     public Users(String name, String email, String phone, String address, String username, String password, int roleId) {

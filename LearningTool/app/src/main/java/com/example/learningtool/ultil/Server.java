@@ -18,4 +18,7 @@ public class Server {
     public static String postCart="http://dungcuhoctapapi.azurewebsites.net/api/Cart";
     public static String getCartId0_0="http://dungcuhoctapapi.azurewebsites.net/api/Cart?userID1=";
     public static String getCartId0_1="&isPaid=";
+    public static String postCartItem="http://dungcuhoctapapi.azurewebsites.net/api/CartItem";
+    public static String getCartItemfromUserIDand0_0="http://dungcuhoctapapi.azurewebsites.net/api/CartItem?userID=";
+    public static String getCartItemfromUserIDand0_1="&isPaid=";
 }

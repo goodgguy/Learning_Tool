@@ -35,10 +35,11 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.learningtool.Fragment.FragmentDialog_Login;
-import com.example.learningtool.Fragment.FragmentDialog_SignUp;
 import com.example.learningtool.Interface.getIdUserInterface;
 import com.example.learningtool.Interface.getUserInterface;
 import com.example.learningtool.R;
+import com.example.learningtool.Thread.getCartItemAsynTask;
+import com.example.learningtool.Thread.getIdCartUserAsynTask;
 import com.example.learningtool.adapter.CategoryAdapter;
 import com.example.learningtool.adapter.ProductsAdapter;
 import com.example.learningtool.model.Categories;
@@ -54,8 +55,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+
+import javax.net.ssl.HttpsURLConnection;
 
 public class MainActivity extends AppCompatActivity implements getUserInterface, getIdUserInterface {
     Toolbar toolbar;
@@ -73,7 +83,9 @@ public class MainActivity extends AppCompatActivity implements getUserInterface,
     ProductsAdapter productsAdapter;
     public static ArrayList<GioHang> gioHangArrayList;
     public static Users users=null;
-    public static int IdCart=-1;
+    //=======================
+    public static int IdCart;
+    //========================
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -357,12 +369,26 @@ public class MainActivity extends AppCompatActivity implements getUserInterface,
     @Override
     public void get(Users users) {
         MainActivity.users=users;
+        Log.e("USER",MainActivity.users.getUsername()+" "+MainActivity.users.getPassword());
+        Log.e("ID CART ID CART",String.valueOf(IdCart));
+        getIdCart();
+        getCartItem();
     }
+
+    private void getCartItem() {
+        String url=Server.getCartItemfromUserIDand0_0+users.getId()+Server.getCartItemfromUserIDand0_1+"0";
+        getCartItemAsynTask getCartItemAsynTask=new getCartItemAsynTask();
+        getCartItemAsynTask.execute(url);
+    }
+
     public void getIdCart()
     {
-
+        String strurl=Server.getCartId0_0+users.getId()+Server.getCartId0_1+"0";
+        Log.e("URL GET IDCART",strurl);
+        Log.e("USER OUT OF FUNCTION",MainActivity.users.getUsername()+" "+MainActivity.users.getPassword()+" "+users.getId());
+        getIdCartUserAsynTask getIdCartUserAsynTask=new getIdCartUserAsynTask();
+        getIdCartUserAsynTask.execute(strurl);
     }
-
 
     @Override
     public void getExit(boolean check) {
@@ -395,7 +421,7 @@ public class MainActivity extends AppCompatActivity implements getUserInterface,
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        
                     }
                 }) {
                     @Override

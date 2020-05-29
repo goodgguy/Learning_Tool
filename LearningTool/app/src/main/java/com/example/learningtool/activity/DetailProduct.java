@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,11 +18,26 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.learningtool.R;
 import com.example.learningtool.model.GioHang;
 import com.example.learningtool.model.Products;
+import com.example.learningtool.ultil.Server;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 
 public class DetailProduct extends AppCompatActivity {
@@ -31,6 +47,7 @@ public class DetailProduct extends AppCompatActivity {
     TextView txtten,txtgia,txtmota,txtDiscount;
     Spinner spinner;
     Button btnDatmua;
+    private static final String TAG = "DetailProduct";
     //Product
     int Id;
     String Name;
@@ -41,8 +58,8 @@ public class DetailProduct extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Toast.makeText(this,String.valueOf(MainActivity.IdCart),Toast.LENGTH_SHORT).show();
         setContentView(R.layout.activity_detail_product);
+        Log.e("DETAIL PRODUCT",String.valueOf(MainActivity.IdCart));
         AnhXa();
         ActionToolbar();
         GetInfomation();
@@ -110,9 +127,60 @@ public class DetailProduct extends AppCompatActivity {
             }
         });
     }
+    //===============ADDDDDDDDDDDDD====================================
     private void AddProductToServer(GioHang gioHang)
     {
+        try {
+            RequestQueue requestQueue = Volley.newRequestQueue(this);
+            JSONObject jsonBody = new JSONObject();
+            jsonBody.put("Quantity",gioHang.getSoluong());
+            jsonBody.put("UnitPrice",gioHang.getPrice());
+            jsonBody.put("ProId",gioHang.getId());
+            jsonBody.put("CartId",MainActivity.IdCart);
 
+            final String mRequestBody = jsonBody.toString();
+            Log.e("CartItem CartItem",mRequestBody);
+
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Server.postCartItem, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            }) {
+                @Override
+                public String getBodyContentType() {
+                    return "application/json; charset=utf-8";
+                }
+
+                @Override
+                public byte[] getBody() throws AuthFailureError {
+                    try {
+                        return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
+                    } catch (UnsupportedEncodingException uee) {
+                        VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
+                        return null;
+                    }
+                }
+
+                @Override
+                protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                    String responseString = "";
+                    if (response != null) {
+                        responseString = String.valueOf(response.statusCode);
+                    }
+                    return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+                }
+            };
+
+            requestQueue.add(stringRequest);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void CatchEvenSpinner() {

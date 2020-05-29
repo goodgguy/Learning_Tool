@@ -1,6 +1,5 @@
 package com.example.learningtool.Fragment;
 
-import android.app.Dialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,7 +11,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.DialogTitle;
 import androidx.fragment.app.DialogFragment;
 
 import com.android.volley.AuthFailureError;
@@ -27,19 +25,13 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.learningtool.Interface.getIdUserInterface;
-import com.example.learningtool.Interface.getUserInterface;
 import com.example.learningtool.R;
-import com.example.learningtool.activity.MainActivity;
-import com.example.learningtool.model.Users;
 import com.example.learningtool.ultil.Server;
-import com.google.android.material.textfield.TextInputLayout;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class FragmentDialog_SignUp extends DialogFragment {
     TextView txtName,txtEmail,txtPhone,txtAddress,txtUsername,txtPassword;
@@ -62,7 +54,7 @@ public class FragmentDialog_SignUp extends DialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NORMAL, R.style.FullScreenDialogTheme);
-        getIdUserInterface= (com.example.learningtool.Interface.getIdUserInterface) getActivity();
+        getIdUserInterface = (getIdUserInterface) getActivity();
     }
     @Nullable
     @Override
