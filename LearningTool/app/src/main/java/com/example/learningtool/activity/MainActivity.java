@@ -381,7 +381,7 @@ public class MainActivity extends AppCompatActivity implements getUserInterface,
         getCartItemAsynTask.execute(url);
     }
 
-    public void getIdCart()
+    public static void getIdCart()
     {
         String strurl=Server.getCartId0_0+users.getId()+Server.getCartId0_1+"0";
         Log.e("URL GET IDCART",strurl);
